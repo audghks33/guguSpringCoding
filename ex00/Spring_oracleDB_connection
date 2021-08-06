@@ -1,0 +1,37 @@
+oracle 11 버전으로 다운 ->다운로드 시 sys계정 패스워드 잊지 않기
+
+SQL Developer 설치 -> sys계정으로 접속 가능
+
+SQL 초록색 + 눌러서 
+계정이름 system
+호스트이름 localhost 포트는 1521 sid:xe 접속 후 다음 진행
+
+// tablespace는 사용자에게 할당하는 데이터저장 상위 단위
+Create USER book_ex IDENTIFIED BY book_ex
+DEFAULT TABLESPACE USERS
+TEMPORARY TABLESPACE TEMP;
+
+alter user 유저명 identified by 바꿀패스워드;
+
+혹시나 있으면 drop user "BOOK_EX" CASCADE 로 삭제 가능
+로 사용자 생성
+
+GRANT CONNECT, DBA TO BOOK_EX;
+로 권한 부여
+
+연결해제 후 생성한 사용자로 들어간다.
+
+초록색 + 눌러서
+BOOk
+book_ex
+비번 해서 테스트 후 접속 
+톰캣이 8080포트 이므로 select dbms_xdb.gethttpport() from dual로 현재 포트확인
+exec dbms_xdb.sethttpport(숫자) 로 변경
+
+\sqldeveloper\jdbc\lib 에 ojdbc.jar 파일 확인 없는 경우 
+oracle 홈페이지에서 jdbc driver 항목을 찾아서  다운로드
+
+이 후 프로젝트 우클릭 -> build path-> library에서 add external ~ 로 ojdbc.jar 추가
+deploy assembly 에도 추가 해주기 add -> java Build Path 누르면 바로 나옴
+
+--> 이후 jdbc테스트 코드 JDBCTests

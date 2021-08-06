@@ -135,6 +135,11 @@
 			<version>1.18.0</version>
 			<scope>provided</scope>
 		</dependency> 
+		<dependency>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
+			<version>2.7.4</version>
+		</dependency>  
 
 		<!-- 추가라이브러리 -->  
 	</dependencies>

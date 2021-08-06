@@ -16,4 +16,20 @@
 		-> 해당 패키지에 있는 @Component 클래스의 인스턴스 생성
 		-> Restaurant 객체는 Chef객체가 필요하여 스프링이 객체를  Restaurant에 chef 주입
 		--> 
+		
+	<!-- CP 설정 -->
+	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
+		<property name="driverClassName" 
+		value="oracle.jdbc.driver.OracleDriver"></property>
+		
+		<property name="jdbcUrl" value="jdbc:oracle:thin:@localhost:1521:XE"></property>
+		<property name="username" value="book_ex"></property>
+		<property name="password" value="qw12as"></property>
+	</bean>
+	
+	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" 
+	destroy-method ="close">
+		<constructor-arg ref="hikariConfig" />
+	</bean>
+	<!-- CP 설정 -> src/test/java DataSourceTests.-->
 </beans>
