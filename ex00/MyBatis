@@ -1,0 +1,11 @@
+전형적인 JDBC프로그램
+Connection and close
+PreparedStatment and setId e.t.c
+
+myBatis
+자동으로 connection close()
+#{prop}와 같은 속성 자동처리
+리턴타입 지정하는 경우 자동으로 객체 생성 및 ResultSet 처리
+
+spring(MyBatis-Spring) <-> MyBatis <-> DB
+MyBatis 관련 라이브러리 추가 pom.xml

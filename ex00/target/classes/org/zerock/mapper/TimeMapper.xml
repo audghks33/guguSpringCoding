@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- doctype (mapper) " ~~~ "  " dtd " 의 패턴 -->
+<mapper namespace="org.zerock.mapper.TimeMapper" >
+	<select id="getTime2" resultType ="string">
+		select sysdate From dual
+	</select>
+	<!-- time mapper 로 testGetTime2 -->
+</mapper>
+	
