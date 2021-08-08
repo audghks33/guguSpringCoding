@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee https://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+
+	<!-- XMl. web.xml, root-context.xml, servlet-context.xml
+		중 web.xml는 Tomcat 구동 관련 설정 나머지 둘은 스프링 
+		
+		프로젝트 구동은 web.xml에서 시작 -> root-context.xml에 정의 된 객체(bean) -> bean이 스프링 영역(context) 에 생성 후 의존성 처리
+		-> 처리된 후에는 DispatcherServlet 서블릿 관련 설정 동작 
+		spring MVC는 HttpServletRequest/HttpServletResponse과 같은 Servlet/jsp의 api 사용이 현저히 줄어듬
+		spring 2.5버전부터는 어노테이션으로 인해 어노테이션+xml등의 설정만으로 개발이 가능하게 되었다.
+		
+		스프링은 모델2 의 방식
+		모델2
+		1.request -> 2.controller < -> 3.model
+						↘ 4.view ->response 
+						
+		스프링MVC패턴
+		
+							↗ 2.handlerMapping
+		->1. dispatcherServlet -> 3.handlerAdapter(@Controller, Controller 인터페이스, HttpRequestHandler 인터페이스를 처리) ->4.Controller
+					↓		↘5.viewResolver(어떤view인지 결정)
+				6.view
+		-->
+
+	<!-- The definition of the Root Spring Container shared by all Servlets and Filters -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>/WEB-INF/spring/root-context.xml</param-value>
+	</context-param>
+	
+	<!-- Creates the Spring Container shared by all Servlets and Filters -->
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+	<!-- Processes application requests -->
+	<servlet>
+		<servlet-name>appServlet</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>/WEB-INF/spring/appServlet/servlet-context.xml</param-value>
+		</init-param>
+		<init-param>
+			<param-name>throwExceptionIfNoHandlerFound</param-name>
+			<param-value>true</param-value>
+			</init-param>
+		<load-on-startup>1</load-on-startup>
+		<!--  web.xml  추가 후 CommonExceptionAdvice -->
+	</servlet>
+		
+	<servlet-mapping>
+		<servlet-name>appServlet</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+
+</web-app>
