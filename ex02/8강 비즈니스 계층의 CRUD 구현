@@ -1,0 +1,5 @@
+영속 계층 작업
+-테이블의 칼럼 구조를 반영하는 VO(value Object) 클래스 생성
+//BoardVO
+-MyBatis Mapper인터페이스의 작성 xml처리
+-작성한 Mapper 인터페이스의 테스트

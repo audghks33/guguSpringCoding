@@ -1,0 +1,43 @@
+Presenetation(화면 계층)
+servlet/jsp or 스프링 MVC 영역
+
+Business(비즈니스 계층)
+xxxService 요구사항 반영 계층
+
+Persistence(영속 혹은 데이터 계층)
+DB or 네트워크 호출
+
+/board/list(게시물 목록) → /board/register(게시물 등록)
+↓								↓
+↓			/board/list(게시물 목록 with 결과)
+↓							↑
+/board/get(게시물 조회) -> /board/modify(게시물 수정/삭제)
+
+
+
+pom.xml 설정 이후 
+ojdbc8.jar(jdbc driver) javabuildpath, deployment 에 추가
+
+테이블 생성과 Dummy 데이터 생성
+create sequence seq_board;
+시퀀스란 자동으로 순차적으로 증가하는 순번을 반환하는 데이터베이스 객체입니다
+순번에 관련된 로직이 필요없이 ROW가 추가될때마다 자동으로 +1을 시켜주어 매우 편리.
+
+create table tbl_board (
+	bno number(10,0) (NOT NULL PRIMARY KEY),
+	title varchar2(200) not null,
+	content varchar2(2000) not null,
+	writer varchar2(50) not null,
+	regdate date default sysdate,
+	updatedate date default sysdate
+	(CONSTRAINT PK_board PRIMARY KEY (bno))
+);
+
+혹은 alter table tbl_board add constraint pk_board
+primary key (bno); 기본키 주입
+
+데이터 삽입
+insert into tbl_board(bno,title,content,writer)
+values(seq_board.nextval, '테스트제목','테스트 내용','user00');
+
+이후 root-context.xml cp, sqlsession 추가 DataSource와 jdbc 테스트
