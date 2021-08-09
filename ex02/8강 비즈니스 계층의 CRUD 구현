@@ -3,3 +3,5 @@
 //BoardVO
 -MyBatis Mapper인터페이스의 작성 xml처리
 -작성한 Mapper 인터페이스의 테스트
+
+BoardMapper.xml , BoardMapper.java(interface)

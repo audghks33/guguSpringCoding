@@ -1,0 +1,10 @@
+WAS 실행 없이 controller 테스트 할 수 있는 것을 학습한다.
+
+Task		url				method		Parameter		from		url이동
+전체 목록		/board/list		get
+등록처리		/board/register	post		모든항목			입력화면필요	이동
+조회			/board/read		get			bno=?
+삭제			/board/remove	post		bno				입력화면필요	이동
+수정			/board/modify	post		모든 항목			입력화면필요	이동
+
+//BoardController
