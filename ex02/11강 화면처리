@@ -1,0 +1,4 @@
+sb-admin-v2.php 파일을 이용해 css는 따로 신경안씀.
+
+views/board/list.jsp 생성부터 시작
+footer , header 생성 후 include
