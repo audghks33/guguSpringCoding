@@ -3,6 +3,7 @@ package org.zerock.mapper;
 import java.util.List;
 
 import org.zerock.domain.BoardVO;
+import org.zerock.domain.Criteria;
 
 public interface BoardMapper {
 
@@ -23,4 +24,7 @@ public interface BoardMapper {
 	//그래서 리턴의 여부로 확인하기 위해 void말고 int사용
 	
 	public int update(BoardVO board);
+	
+	public List<BoardVO> getListWithPaging(Criteria cri);
+	// resource에 BoardMapper.xml getListWithPaging 추가
 }

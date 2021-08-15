@@ -1,0 +1,73 @@
+SQL developer에서 계획설명 ( f10 ) 를 누르면 실행한 SQL이 어떻게 처리 된 것인지 알려줌
+이를 보고 SQL튜닝을 한다. 안쪽에서 바깥쪽으로, 위에서 아래로 보는 식으로 본다.
+
+insert into tbl_board (bno,title,content,writer )
+(select SEQ_BOARD.nextval,title,content,writer from tbl_board); 로 더미를 쉽게 만든다.
+
+데이터가 많으면 정렬도 시간을 소모한다. 고의적으로 bno +1 값을 역순으로 정렬하는 SQL를 만들면
+select *from tbl_board order by bno+1 desc;
+select *from tbl_board order by bno desc;
+
+순서대로 해보면 8초대에서 0초대로 바뀐다 이를 이해하기 위해서는 인덱스에 대한 이해가 필요하다.
+정렬에 엄청난 시간을 쏟기 떄문에 이미 정렬된 구조인 index를 사용한다.
+
+select /*+INDEX_DESC(tbl_board pk_board)  */
+*
+from 
+	tbl_board
+	where bno >0;
+	
+로 하면 10배차이남 
+
+인덱스와 오라클 힌트
+
+select * from tbl_board order by bno desc;
+select /*+INDEX_DESC (tbl_board pk_board) */* from tbl_board;
+//힌트 내용은 tbl_board 테이블에 pk_board 인덱스를 역순으로 이용해 줄 것.
+
+select /*+ Hint name(param....) */ column name, .... from table name...
+의 형식으로 보통 되며 잘못 작성시 SQL처리 되지 않고 무시 됨.
+
+select /*+ FULL(tbl_board) */ * from tbl_board order by bno desc;
+// 전체를 스캔해서 느림.
+
+/*+ index_asc or index_desc */
+order by 조건이 없어도 순번을 통해서 접근
+
+ROWNUM 과 인라인 뷰
+ROWNUM 은 SQL 이 실행된 결과에 넘버링을 해준다.(테이블에서 데이터를 추출한 후 처리되는 변수라 매번 값이 다름)
+
+PK_board 인덱스로 접근한다면 이런식으로
+1) PK_board 인덱스를 통해서 테이블 접근
+2) 접근한 데이터에 ROWNUM을 부여
+
+select rownum rn, bno, title from tbl_board;
+
+select /*+ FULL(tbl_board) */ rownum rn, bno, title from tbl_board where bno>0 order by bno;
+
+select /*+ INDEX_ASC(tbl_board pk_board)*/ rownum rn, bno, title, content from tbl_board;
+셋의 차이를 확인 // 인덱스를 기준으로 순서대로 모으는 느낌.
+
+한 페이지 당 10개의 데이터를 출력한다고 하면 
+select /*+INDEX_DESC(tbl_board pk_board) */ rownum rn, bno, title, content 
+from tbl_board where rownum <= 10;
+
+10~20 에 해당하는 페이지는
+select /*+INDEX_DESC(tbl_board pk_board) */ rownum rn, bno, title, content 
+from tbl_board where rownum > 10 and rownum <=20 ; 이 아님 
+tbl_board   /  by index rowid    
+pk_board    /  Full scan Descending
+
+tbl_board 에서 인덱스 1을 지정하지만 where 조건으로 사라짐.
+그래서 INDEX사용시 항상 1이 포함 될 수 있도록 해야함.
+
+여기에서 해결을 위해 인라인뷰를 사용
+
+select from 
+		( select
+			from )
+			
+select * 
+from 
+(select /*+INDEX_DESC(tbl_board pk_board) */ rownum rn, bno, title, content 
+from tbl_board where  rownum <= 20) where rn > 10;

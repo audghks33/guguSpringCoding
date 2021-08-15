@@ -3,6 +3,7 @@ package org.zerock.service;
 import java.util.List;
 
 import org.zerock.domain.BoardVO;
+import org.zerock.domain.Criteria;
 
 //마커를 담아둔 통 같은 느낌? 
 public interface BoardService {
@@ -17,5 +18,7 @@ public interface BoardService {
 	
 	public boolean remove(Long bno);
 	
-	public List<BoardVO> getList();
+	/* public List<BoardVO> getList(); */
+	//페이지 당 리스트 조회므로 주석
+	public List<BoardVO> getList(Criteria cri);
 }
