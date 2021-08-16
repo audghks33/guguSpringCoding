@@ -1,0 +1,28 @@
+우저 주소창에서 페이지 번호를 전달해서 결과를 확인하는 단계
+jsp에서 페이지 번호를 출력하는 단계
+각 페이지 번호에서 클릭 이벤트 처리
+전체 데이터 개수를 반영해서 페이지 번호 조절의 순으로 
+
+이를 위한 정보는
+1. 현재 페이지 번호
+2. 이전과 다음으로 이동 가능한 링크의 표시 여부
+3. 화면에서 보여지는 페이지의 시작 번호와 끝 번호
+
+끝 페이지와 시작 페이지 번호
+
+this.endPage = (int)(Math.ceil(페이지번호/10.0)) * 10; 
+					(올림)
+시작번호
+this.startPage =this.endPage-9;
+
+realEnd = (int)(Math.ceil((total*1.0)/amount)); 
+
+if(realEnd < this.endPage){
+	this.endPage = realEnd;
+}
+
+이전(prev) 시작번호가 1보다 큰 경우 , 다음(next) realEnd가 끝 번호(endPage) 보다 큰 경우
+this.prev= this.startPage >1 ;
+this.next =this.endPage < realEnd;
+
+->domain PageDTO

@@ -12,19 +12,23 @@ public interface BoardMapper {
 	//test/java mapper BoardMapperTests
 	
 	public void insert(BoardVO board);
-	//insertÃ³¸®ÇÏ°í pk¾ËÇÊ¿ä ¾ø´Â °æ¿ì
+	//insertÃ³ï¿½ï¿½ï¿½Ï°ï¿½ pkï¿½ï¿½ï¿½Ê¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 	public void insertSelectKey(BoardVO board);
-	//pk ¾Ë ÇÊ¿ä°¡ ÀÕ´Â °æ¿ì
+	//pk ï¿½ï¿½ ï¿½Ê¿ä°¡ ï¿½Õ´ï¿½ ï¿½ï¿½ï¿½
 	
 	public BoardVO read(long bno);
-	// °í¸¥ °Ô½Ã¹°ÀÇ ³»¿ëÀ» ºÁ¾ßÇÏ¹Ç·Î BoardVO
+	// ï¿½ï¿½ ï¿½Ô½Ã¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¹Ç·ï¿½ BoardVO
 	
 	public int delete(long bno);
-	//Mybatis¿¡¼­´Â ±âº»ÀûÀ¸·Î Äõ¸®°¡ µ¹°í ³ª¸é ¾÷µ¥ÀÌÆ® ÇÑ ÇàÀÇ °³¼ö¸¦ ¸®ÅÏ
-	//±×·¡¼­ ¸®ÅÏÀÇ ¿©ºÎ·Î È®ÀÎÇÏ±â À§ÇØ void¸»°í int»ç¿ë
+	//Mybatisï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½âº»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	//ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î·ï¿½ È®ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½ voidï¿½ï¿½ï¿½ï¿½ intï¿½ï¿½ï¿½
 	
 	public int update(BoardVO board);
 	
 	public List<BoardVO> getListWithPaging(Criteria cri);
-	// resource¿¡ BoardMapper.xml getListWithPaging Ãß°¡
+	// resourceï¿½ï¿½ BoardMapper.xml getListWithPaging ï¿½ß°ï¿½
+	
+	public int getTotalCount(Criteria cri);
+	// ì‹¤ì œ ê²Œì‹œê¸€ ì´ ê°œìˆ˜
+	// BoardMapper.xml
 }

@@ -22,6 +22,9 @@
       <div class="panel-body">
 
 		<form role="form" action="/board/modify" method="post">
+		<input type ='hidden' name="pageNum" value='<c:out value="${cri.pageNum }" /> '>
+		<input type ='hidden' name="amount" value='<c:out value="${cri.amount }" /> '>
+		<!-- hidden 추가 후 controller modify post -->
 		
 		<div class="form-group">
           <label>Bno</label> 
@@ -89,9 +92,17 @@
 			if(operation === 'remove'){
 				formObj.attr("action", "/board/remove");
 			}else if(operation === 'list' ){
-				self.location ='/board/list';
-				return;
-				//11강 끝
+				/* self.location ='/board/list'; */
+				// 변경 페이지에서 그냥 목록 누를 때 몇번 리스트 였는 지 리셋 막기
+				formObj.attr("action", "/board/list").attr("method", "get");
+				var pageNumTag=$("input[name='pageNum']").clone();
+				var amountTag=$("input[name='amount']").clone();
+				
+				formObj.empty();
+				formObj.append(pageNumTag);
+				formObj.append(amountTag);
+				
+				// interFace BoardMapper
 			}
 			formObj.submit();
 			

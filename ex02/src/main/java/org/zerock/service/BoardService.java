@@ -5,11 +5,11 @@ import java.util.List;
 import org.zerock.domain.BoardVO;
 import org.zerock.domain.Criteria;
 
-//¸¶Ä¿¸¦ ´ã¾ÆµÐ Åë °°Àº ´À³¦? 
+//ï¿½ï¿½Ä¿ï¿½ï¿½ ï¿½ï¿½Æµï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½? 
 public interface BoardService {
 
-	//BoardMapper.java´Â SQL±âÁØÀÇ ÇàÀ§¸¦ ÀÛ¼º
-	//BoardService´Â 
+	//BoardMapper.javaï¿½ï¿½ SQLï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Û¼ï¿½
+	//BoardServiceï¿½ï¿½ 
 	public void register(BoardVO board);
 	
 	public BoardVO get(Long bno);
@@ -19,6 +19,8 @@ public interface BoardService {
 	public boolean remove(Long bno);
 	
 	/* public List<BoardVO> getList(); */
-	//ÆäÀÌÁö ´ç ¸®½ºÆ® Á¶È¸¹Ç·Î ÁÖ¼®
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½È¸ï¿½Ç·ï¿½ ï¿½Ö¼ï¿½
 	public List<BoardVO> getList(Criteria cri);
+	
+	public int getTotal(Criteria cri);
 }

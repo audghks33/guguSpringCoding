@@ -34,7 +34,11 @@
                                 <tr>
                                 	<td><c:out value="${board.bno }" /></td>
                                 	<!-- 새 창으로 띄우고 싶으면 a 태그에 target='_blank' -->
-                                	<td><a href='/board/get?bno=<c:out value="${board.bno }" />'>
+                                	<td><%-- <a  href='/board/get?bno=<c:out value="${board.bno }" />'>
+                                		go BoardController
+                                	 --%>
+                                	<a class="move" href='<c:out value="${board.bno }"/>'>
+                                	<!-- class move 추가 -->
                                 	<c:out value="${board.title }" /></a></td>
                                 	<td><c:out value="${board.writer }" /></td>
                                 	<td><fmt:formatDate pattern="yyyy-MM-dd" value="${board.regdate }"/></td>
@@ -42,6 +46,40 @@
                                 </tr>
                                 </c:forEach>
                                 </table>
+                                
+                                <div class='pull-right'>
+                                	<ul class="pagination">
+                                		<c:if test="${pageMaker.prev}">
+                                			<li class="paginate_button previous">
+                                				<a href="${pageMaker.startPage-1 }">
+                                					Previous
+                                				</a>
+                                			</li>
+                                		</c:if>
+                                		
+                                		
+                                		<c:forEach var="num" begin="${pageMaker.startPage}" end="${pageMaker.endPage}">
+                                			<li class = "paginate_button ${pageMaker.cri.pageNum==num ?"active" :"" }"><a href="${num }">${num}</a></li>
+                                		</c:forEach>
+                                		
+                                		<c:if test="${pageMaker.next}" >
+                                			<li class="paginate_button next">
+                                				<a href="${pageMaker.endPage +1 }">
+                                					next
+                                				</a>
+                                			</li>
+                                		</c:if>
+                                			
+                         
+                                		
+                                		<form id ='actionForm' action="/board/list"  method='get'>
+                                		<!-- 주소에 태워 넣을 내용 (리스트에 돌아 올 때의 번호 저장) -->
+                                			<input type="hidden" name="pageNum" value ="${pageMaker.cri.pageNum}">
+                                			<input type="hidden" name="amount" value ="${pageMaker.cri.amount}">
+                                		</form>
+                                		
+                                	</ul><!-- /.pagination -->
+                                </div><!-- /.pull-right -->
                                 
                                 <!-- Modal 게시물 등록 모달창 -->
                                 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" 
@@ -103,6 +141,31 @@
 		$("#regBtn").on("click", function(){
 			self.location ="/board/register";
 		})
+		
+		//페이지 전환 기능
+		var actionForm =$("#actionForm");
+		
+		$(".paginate_button a").on("click", function(e){
+			e.preventDefault();
+			
+			console.log('click');
+			
+			actionForm.find("input[name='pageNum']").val($(this).attr("href"));
+			actionForm.submit();
+		
+		});
+		
+		//게시글을 누르고 목록으로 돌아갔을 때 페이지 리셋 막기
+		$(".move").on("click", function(e){
+			e.preventDefault();
+			actionForm.append("<input type='hidden' name='bno' value='"
+					+$(this).attr("href")+"'>");
+			//href에 직접 주소 생성 해주다가 hidden으로 넘기는 값이랑 같이 넘길려고 hidden 형태로 해당 부분으로 교체한 듯?>??
+			actionForm.attr("action", "/board/get");
+			actionForm.submit();
+			
+			
+		});
 	});
 	</script>
 </body>

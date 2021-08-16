@@ -10,9 +10,9 @@ import org.zerock.mapper.BoardMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
 
-//impl »ı¼º ÈÄ ÇØ´ç ÀÚ¿øÀ» root-context.xml ¿¡ Ãß°¡ ÀÌÈÄ BoardService Tests
+//impl ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ø´ï¿½ ï¿½Ú¿ï¿½ï¿½ï¿½ root-context.xml ï¿½ï¿½ ï¿½ß°ï¿½ ï¿½ï¿½ï¿½ï¿½ BoardService Tests
 @Service
-@AllArgsConstructor// Å¬·¡½º¿¡ Á¸ÀçÇÏ´Â ¸ğµç ÇÊµå¿¡ ´ëÇÑ »ı¼ºÀÚ¸¦ ÀÚµ¿À¸·Î »ı¼º
+@AllArgsConstructor// Å¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ ï¿½Êµå¿¡ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 @Log4j
 public class BoardServiceImpl implements BoardService{
 
@@ -29,7 +29,7 @@ public class BoardServiceImpl implements BoardService{
 	@Override
 	public BoardVO get(Long bno) {
 		
-		log.info("getÀÓ..........."  +bno);
+		log.info("getï¿½ï¿½..........."  +bno);
 		
 		return mapper.read(bno);
 	}
@@ -37,7 +37,7 @@ public class BoardServiceImpl implements BoardService{
 	@Override
 	public boolean modify(BoardVO board) {
 		
-		log.info("º¯°æ ´ï..........." + board);
+		log.info("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½..........." + board);
 		
 		return mapper.update(board) == 1;
 	}
@@ -45,7 +45,7 @@ public class BoardServiceImpl implements BoardService{
 	@Override
 	public boolean remove(Long bno) {
 		
-		log.info("»èÁ¦µÊ .............." + bno);
+		log.info("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ .............." + bno);
 		
 		return mapper.delete(bno) == 1;
 	}
@@ -53,9 +53,16 @@ public class BoardServiceImpl implements BoardService{
 	@Override
 	public List<BoardVO> getList(Criteria cri) {
 		
-		log.info("get¸®½ºÆ®..................+ cri");
+		log.info("getï¿½ï¿½ï¿½ï¿½Æ®..................+ cri");
 		return mapper.getListWithPaging(cri);
 	}
 	
+	@Override
+	public int getTotal(Criteria cri) {
+	
+		log.info("ì´ ëª‡ê°œë‹ˆ " + cri);
+		return mapper.getTotalCount(cri);
+		//board controller list
+	}
 	
 }
