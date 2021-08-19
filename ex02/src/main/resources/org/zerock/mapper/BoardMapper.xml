@@ -57,15 +57,64 @@
 			rownum rn, bno, title, content, writer, regdate, updatedate
 		from 
 			tbl_board
-		where rownum <= #{pageNum} * #{amount}
+		where
+	]]>
+
+		<include refid="criteria"></include>
+		
+		<!-- <trim prefix="(" suffix=") AND " prefixOverrides="OR">
+			<foreach item='type' collection="typeArr">
+				<trim prefix="or">
+					<choose>
+						<when test="type== 'T'.toString()">
+							title like '%'||#{keyword}||'%'
+						</when>
+						<when test="type == 'C'.toString()">
+							content like '%'||#{keyword}||'%'
+						</when>
+						<when test="type == 'W'.toString()">
+							writer like '%'||#{keyword}||'%'
+						</when>
+					</choose>
+				</trim>
+			</foreach>
+		
+		</trim> -->
+		
+		<![CDATA[
+		 rownum <= #{pageNum} * #{amount}
 		) 
 		where rn > (#{pageNum} -1) *#{amount}
-	
-	]]>
+		]]>
+		
+		
 	<!-- 페이징 테스트를 위한 test/java-BoardMapperTests -->
 	<!--rownum <= 20 , rn > 10  에서 수정 이후 testPaging에서 임의 숫자 기입 -->
 </select>
 <select id="getTotalCount" resultType="int">
-	select count(*) from tbl_board where bno>0
+	select count(*) from tbl_board 
+	where 
+	<include refid="criteria"></include>
+	bno > 0
 </select>
+
+<sql id="criteria">
+		<trim prefix="(" suffix=") AND " prefixOverrides="OR">
+			<foreach item='type' collection="typeArr">
+				<trim prefix="OR">
+					<choose>
+						<when test="type== 'T'.toString()">
+							title like '%'||#{keyword}||'%'
+						</when>
+						<when test="type == 'C'.toString()">
+							content like '%'||#{keyword}||'%'
+						</when>
+						<when test="type == 'W'.toString()">
+							writer like '%'||#{keyword}||'%'
+						</when>
+					</choose>
+				</trim>
+			</foreach>
+		</trim>
+</sql><!-- list 검색조건 추가 -->
 </mapper>

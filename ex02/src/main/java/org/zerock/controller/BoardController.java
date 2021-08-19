@@ -76,10 +76,14 @@ public class BoardController {
 			rttr.addFlashAttribute("result" , "success");
 		}
 		
-		rttr.addAttribute("pageNum", cri.getPageNum());
-		rttr.addAttribute("amount", cri.getAmount());
+		/*
+		 * rttr.addAttribute("pageNum", cri.getPageNum()); rttr.addAttribute("amount",
+		 * cri.getAmount()); rttr.addAttribute("type", cri.getType());
+		 * rttr.addAttribute("keyword", cri.getKeyword());
+		 */
 		
-		return "redirect:/board/list";
+		return "redirect:/board/list" + cri.getListLink();
+		//이런식으로 일일이 넣어 줄 필요를 덜어 줄 수 있다.
 	}
 	
 	@PostMapping("/remove")
@@ -94,7 +98,9 @@ public class BoardController {
 		
 		rttr.addAttribute("pageNum",cri.getPageNum());
 		rttr.addAttribute("amount",cri.getAmount());
-		
+		rttr.addAttribute("type", cri.getType());
+		rttr.addAttribute("keyword", cri.getKeyword());
+		//modify.jsp로
 		
 		return "redirect:/board/list" ;
 	}

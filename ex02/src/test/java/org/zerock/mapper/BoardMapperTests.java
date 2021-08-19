@@ -23,13 +23,13 @@ public class BoardMapperTests {
 		
 		/*
 		 * @Test public void testGetList() {
-		 * mapper.getList().forEach(board->log.info(board)); } //log È®ÀÎ ÀÌÈÄ main/resource
-		 * org/zerock/mapper BoardMapper.xml»ý¼º
+		 * mapper.getList().forEach(board->log.info(board)); } //log È®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ main/resource
+		 * org/zerock/mapper BoardMapper.xmlï¿½ï¿½ï¿½ï¿½
 		 * 
 		 * @Test public void testInsert() {
 		 * 
-		 * BoardVO board = new BoardVO(); board.setTitle("»õÀÛ±Û");
-		 * board.setContent("»õÀÛº»"); board.setWriter("»õ·Î¾´³ð");
+		 * BoardVO board = new BoardVO(); board.setTitle("ï¿½ï¿½ï¿½Û±ï¿½");
+		 * board.setContent("ï¿½ï¿½ï¿½Ûºï¿½"); board.setWriter("ï¿½ï¿½ï¿½Î¾ï¿½ï¿½ï¿½");
 		 * 
 		 * mapper.insert(board);
 		 * 
@@ -37,12 +37,12 @@ public class BoardMapperTests {
 		 * 
 		 * @Test public void testInsertSelectKey() {
 		 * 
-		 * BoardVO board = new BoardVO(); board.setTitle("»õÀÛ±Û sel");
-		 * board.setContent("»õÀÛº» sle"); board.setWriter("»õ·Î¾´³ð sle");
+		 * BoardVO board = new BoardVO(); board.setTitle("ï¿½ï¿½ï¿½Û±ï¿½ sel");
+		 * board.setContent("ï¿½ï¿½ï¿½Ûºï¿½ sle"); board.setWriter("ï¿½ï¿½ï¿½Î¾ï¿½ï¿½ï¿½ sle");
 		 * 
 		 * mapper.insertSelectKey(board);
 		 * 
-		 * log.info(board); } //read Ã³¸® mapper BoardMapper
+		 * log.info(board); } //read Ã³ï¿½ï¿½ mapper BoardMapper
 		 * 
 		 * @Test public void testRead() { BoardVO board = mapper.read(5L);
 		 * 
@@ -51,26 +51,38 @@ public class BoardMapperTests {
 		 * @Test public void testDelete() {
 		 * 
 		 * 
-		 * log.info("»è»è»è»è" +mapper.delete(5L)); }
+		 * log.info("ï¿½ï¿½ï¿½ï¿½ï¿½" +mapper.delete(5L)); }
 		 * 
 		 * @Test public void testUpdate() {
 		 * 
 		 * BoardVO board =new BoardVO(); board.setBno(6L);
-		 * board.setTitle("»õÀÛ±Û 222222sel"); board.setContent("»õÀÛº» 2222sle");
-		 * board.setWriter("¼öÁ¤µÈ³ð");
+		 * board.setTitle("ï¿½ï¿½ï¿½Û±ï¿½ 222222sel"); board.setContent("ï¿½ï¿½ï¿½Ûºï¿½ 2222sle");
+		 * board.setWriter("ï¿½ï¿½ï¿½ï¿½ï¿½È³ï¿½");
 		 * 
-		 * int count = mapper.update(board); log.info("¾÷µ« Ä«¿îÆ®" + count);
+		 * int count = mapper.update(board); log.info("ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½ï¿½Æ®" + count);
 		 * 
 		 * }
 		 */
+		/*
+		 * @Test public void testPaging() {
+		 * 
+		 * Criteria cri = new Criteria(3,30); // ï¿½ï¿½ï¿½ï¿½ ï¿½×½ï¿½Æ® ï¿½ï¿½ BoardService Controller
+		 * ï¿½ï¿½ï¿½ï¿½
+		 * 
+		 * List<BoardVO> list = mapper.getListWithPaging(cri);
+		 * 
+		 * list.forEach(board->log.info(board)); }
+		 */
+		
 		@Test
-		public void testPaging() {
+		public void testSearch() {
 			
-			Criteria cri = new Criteria(3,30);
-			// ¼öÁ¤ Å×½ºÆ® ÈÄ BoardService Controller ¼öÁ¤
+			Criteria cri = new Criteria();
+			cri.setKeyword("ì„œë¹„ìŠ¤");
+			cri.setType("TC");
 			
 			List<BoardVO> list = mapper.getListWithPaging(cri);
+			list.forEach(board -> log.info(board));
 			
-			list.forEach(board->log.info(board));
 		}
 }

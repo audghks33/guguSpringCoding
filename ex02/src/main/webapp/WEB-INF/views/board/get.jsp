@@ -54,7 +54,13 @@
         	<c:out value="${board.bno}"/>'>
         	<input type="hidden" name='pageNum' value='<c:out value="${cri.pageNum}" />' >
         	<input type="hidden" name='amount' value='<c:out value="${cri.amount}" />' >
+        	<!-- 검색해서 해당 게시글을 골랐다가 리스트로 돌아갈때 확인내용  -->
+        	<input type="hidden" name='keyword' value='<c:out value="${cri.keyword}" />' >
+        	<input type="hidden" name='type' value='<c:out value="${cri.type}" />' >
+        	<!-- 검색해서 해당게시글을 골랐다가 리스트로 돌아갈때 확인내용 -> modify로 -->
         	<!-- modify로 -->
+        	
+        	
         </form>
 
       </div>

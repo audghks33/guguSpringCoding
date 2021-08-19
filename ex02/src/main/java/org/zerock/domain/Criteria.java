@@ -1,5 +1,9 @@
 package org.zerock.domain;
 
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.queryParam;
+
+import org.springframework.web.util.UriComponentsBuilder;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -12,14 +16,35 @@ public class Criteria {
 	private int pageNum;
 	private int amount;
 	
+	private String type;
+	private String keyword;
+	
 	public Criteria() {
 		this(1,10);
 	}
 	
 	public Criteria(int pageNum, int amount) {
-		// ¸î¹øÂ° ÆäÀÌÁö¿¡ ¸î°³ ex 3,30 ÀÌ¸é 31~60 ÀÇ µ¥ÀÌÅÍ
+		// ï¿½ï¿½ï¿½Â° ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½î°³ ex 3,30 ï¿½Ì¸ï¿½ 31~60 ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		this.pageNum = pageNum;
 		this.amount = amount;
 	}
-	// mapper-BoardMapper getListWithPaging() ¸Þ¼­µå ÀÛ¼º
+	public String[] getTypeArr() {
+		
+		return type == null? new String[] {}: type.split("");
+	//BoardMapper.xml
+	}
+	
+	// mapper-BoardMapper getListWithPaging() ï¿½Þ¼ï¿½ï¿½ï¿½ ï¿½Û¼ï¿½
+	
+	public String getListLink() {
+		// ì›¹íŽ˜ì´ì§€ì—ì„œ ë§¤ë²ˆ íŒŒë¼ë¯¸í„°ë¥¼ ìœ ì§€í•˜ëŠ” ì¼ì´ ë²ˆê±°ë¡­ê³  íž˜ë“¤ë•Œ.-> boardController modify
+		UriComponentsBuilder builder = UriComponentsBuilder.fromPath("")
+		.queryParam("pageNum", this.getPageNum())
+		.queryParam("amount", this.getAmount())
+		.queryParam("type",this.getType())
+		.queryParam("keyword",this.getKeyword());
+		
+		return builder.toUriString();
+		
+	}
 }

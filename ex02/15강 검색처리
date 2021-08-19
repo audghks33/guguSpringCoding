@@ -1,0 +1,118 @@
+오라클은 페이징 처리에 인라인뷰를 이용하여서 검색 조건에 대한 처리는 인라인뷰의 내부에서 이뤄져야함.
+
+쿼리 안에 또 다른 쿼리 - Sub Query
+
+SELECT col1, (SELECT ...)     -- 스칼라 서브쿼리(Scalar Sub Query): 하나의 컬럼처럼 사용 (표현 용도)
+
+ FROM (SELECT ...)             -- 인라인 뷰(Inline View): 하나의 테이블처럼 사용 (테이블 대체 용도)
+
+WHERE col = (SELECT ...)    -- 일반 서브쿼리: 하나의 변수(상수)처럼 사용 (서브쿼리의 결과에 따라 달라지는 조건절)
+
+Like 를 이용하게 될 것 
+
+select
+*
+from
+ 	(select /*+INDEX_DESC(tbl_board pk_board) */
+ 		rownum rn ,bno, title, content, writer, regdate, updatedate
+ 		
+ 		from
+ 			tbl_board
+ 		where
+ 			title like '%Test%'
+ 			
+ 			and rownum <=20
+ 			)
+ 			where rn >10;
+ 			
+ 일반적인 제목 검색일 경우
+ 
+ 다중 항목 검색의 경우는
+ select 
+ *
+ from 
+ 	(select /*+INDEX_DESE(tbl_board pk_board) */
+ 		rownum rn, bno, title , content , writer, regdate, updatedate
+ 	from
+ 		tbl_board
+ 	where
+ 	title like '%Test%' or content like '%Test%'
+ 	//(title like '%Test%' or content like '%Test%')
+ 	and rownum <=20
+ 	)
+ 	where rn >10; 로 예상하지만
+ 	
+ 	and가 or보다 우선순위가 높아서 ( ) 로 우선순위 설정이 필요
+ 	
+ 	MyBatis는 
+ 	
+ 	*if
+ 	*choose(when, otherwise)
+ 	*trim (where, set)
+ 	*foreach
+ 	
+ 	의 동적태그를 사용 가능
+ 	
+ 	ex)
+ 	
+ 	*if
+ 	검색조건이 제목이 키워드인 항목을 검색
+ 	<if test ="type == 'T'.toString()">
+ 		(title like '%'||#{keyword}||'%')
+ 	</if>
+ 
+ 	if 안에 들어가는 식은 OGNL 표현식이라고 한다.
+ 	
+ 	
+ 	*choose
+ 	<when test="type == 'T'.toString()">
+ 		(title like '%'||#{keyword}||'%')
+ 	</when>
+ 	<otherwise>
+ 		(title like '%'||#{keyword}||'%' or content like '%'||#{keyword}||'%' )
+ 	</otherwise>
+ 	
+ 	*where
+ 	
+ 	select * from tbl_board
+ 		<where>
+ 			<if test="bno != null">
+ 				bno =#{bno}
+ 			</if>
+ 		</where>
+ 		
+ 		
+ 	*trim
+ 	
+ 	select * from tbl_board
+ 		<where>
+ 			<if test="bno != null">
+ 				bno =#{bno}
+ 			</if>
+ 		</where>
+ 		<trim prefix ="and"> 앞의 where 이 있으면 and 없으면 생략해줌.
+ 		rownum =1
+ 		</trim>
+ 		
+ 	* foreach
+ 	Map<String,String> mape e= new HashMap<>();
+ 	map.put('T','TTTT');
+ 	map.put('C','CCCC'); 처럼 넣은 후
+ 	
+ 	select * from tbl_board
+ 	<trim prefix="where(" suffix =")" prefixOverrides ="OR" >
+ 		<foreach item="val" index ="key" conllection ="map">
+ 	
+ 		<trim prefix ='OR'>
+ 			<if test="key == 'c'.toString()">
+ 				content = #{val}
+ 			</if>
+ 		</trim>
+ 		</foreach>
+ 	</trim>
+ 	
+ 	
+ 	검색조건 처리를 위한 Criteria 변화
+ 	
+ 	
+ 				
