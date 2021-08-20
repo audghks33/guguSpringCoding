@@ -1,0 +1,34 @@
+Rest는 Representational State Transfer
+/boards/123 에서 123이 고유한 의미를 가지도록 설계
+
+@RestController Controller가 rest 방식을 처리하기 위한 것 임을 명시
+@ResponseBody 일반적인 JSP와 같은 뷰로 전달되는 게 아니라 데이터 자체를 전달하기 위한 용도
+@Pathvariable URL 경로에 있는 값을 파라미터로 추출하려고 할 때 사용
+@CrossOrigin Ajax의 크로스 도메인 문제를 해결해주는 어노테이션
+@RequestBody JSON데이터를 원하는 타입으로 바인딩 처리
+
+Json은 javascript Object Notation으로 {} 로 묶은 키 . 값 형태의 경량 데이터 포멧
+
+{
+	"이름" : "홍길동",
+	"나이":"25"
+	...
+	...
+}
+프로그래밍 언어에 관계 없계 없이 사용할 수 있는 데이터 표현 방식
+
+@RestController에서 파라미터
+@PathVariable: 일반 컨트롤러에서도 사용 가능하지만 REST방식에서 자주사용 URL 경로의 일부를 파라미터로 사용할 떄
+---SampleController getPath
+
+@RequestBody: Json데이터를 원하는 타입의 객체로 변환하는 경우 사용
+---domain - Ticket
+
+
+REST 방식으로 전송방식을 결합하면 다음과 같은 형태가 됨.
+members라는 자원을 대상으로 한다고 하면.
+등록 post /members/new
+조회 get /members/{id}
+수정 put /members/{id}+body
+삭제 delete /members/{id}
+
