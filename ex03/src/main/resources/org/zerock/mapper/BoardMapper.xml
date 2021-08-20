@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.zerock.mapper.BoardMapper">
+
+<select id="getList" resultType="org.zerock.domain.BoardVO">
+	<![CDATA[
+	select * from tbl_board where bno>0 
+	]]>
+	<!-- '>', '<', ',', '&' 등의 기호를 사용하기 위해 ![Cdata] 사용 
+		xml에 sql을 넣기 때문에 해당 sql을 넣음연 mapper BoardMapper 인터페이스는 @Select 가 필요없어짐
+	-->
+</select>
+
+<!--  추가 할 경우 boardMapper 인터페이스에서 동작 정의 해놓고 xml 에 쓰기 -->
+
+<insert id="insert">
+	insert into tbl_board (bno, title, content,writer)
+	values (seq_board.nextval, #{title},#{content},#{writer})
+</insert>
+
+<insert id="insertSelectKey" >
+	<selectKey keyProperty="bno" order="BEFORE" resultType="long">
+		select seq_board.nextval from dual
+	</selectKey>
+	<!-- oracle은 auto increasement를 제공하지 않아서 순번 넣어주는거라고 생각하면 됨 -->
+	
+	insert into tbl_board(bno, title, content, writer)
+	values (#{bno},#{title},#{content},#{writer})
+</insert>
+
+<select id="read" resultType="org.zerock.domain.BoardVO">
+	select * from tbl_board where bno =#{bno}
+</select>
+
+<delete id="delete">
+	delete from tbl_board where bno = #{bno}
+</delete>
+
+<update id="update">
+	update tbl_board 
+		set title=#{title},
+			content=#{content},
+			writer=#{writer},
+			updateDate = sysdate
+			where bno= #{bno}
+</update>
+
+<select id="getListWithPaging" resultType="org.zerock.domain.BoardVO">
+	<![CDATA[
+		select
+			bno, title,content,writer,regdate,updatedate
+		from
+		(
+		select /*+INDEX_DESC(tbl_board pk_board) */
+			rownum rn, bno, title, content, writer, regdate, updatedate
+		from 
+			tbl_board
+		where
+	]]>
+
+		<include refid="criteria"></include>
+		
+		<!-- <trim prefix="(" suffix=") AND " prefixOverrides="OR">
+			<foreach item='type' collection="typeArr">
+				<trim prefix="or">
+					<choose>
+						<when test="type== 'T'.toString()">
+							title like '%'||#{keyword}||'%'
+						</when>
+						<when test="type == 'C'.toString()">
+							content like '%'||#{keyword}||'%'
+						</when>
+						<when test="type == 'W'.toString()">
+							writer like '%'||#{keyword}||'%'
+						</when>
+					</choose>
+				</trim>
+			</foreach>
+		
+		</trim> -->
+		
+		<![CDATA[
+		 rownum <= #{pageNum} * #{amount}
+		) 
+		where rn > (#{pageNum} -1) *#{amount}
+		]]>
+		
+		
+	<!-- 페이징 테스트를 위한 test/java-BoardMapperTests -->
+	<!--rownum <= 20 , rn > 10  에서 수정 이후 testPaging에서 임의 숫자 기입 -->
+</select>
+<select id="getTotalCount" resultType="int">
+	select count(*) from tbl_board 
+	where 
+	<include refid="criteria"></include>
+	bno > 0
+</select>
+
+<sql id="criteria">
+		<trim prefix="(" suffix=") AND " prefixOverrides="OR">
+			<foreach item='type' collection="typeArr">
+				<trim prefix="OR">
+					<choose>
+						<when test="type== 'T'.toString()">
+							title like '%'||#{keyword}||'%'
+						</when>
+						<when test="type == 'C'.toString()">
+							content like '%'||#{keyword}||'%'
+						</when>
+						<when test="type == 'W'.toString()">
+							writer like '%'||#{keyword}||'%'
+						</when>
+					</choose>
+				</trim>
+			</foreach>
+		</trim>
+</sql><!-- list 검색조건 추가 -->
+</mapper>
