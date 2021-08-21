@@ -1,0 +1,49 @@
+댓글 처리를 위한 영속 영역
+
+create table tbl_reply (
+	rno number(10, 0),
+	bno number(10, 0) not null,
+	reply varchar2(1000) not null,
+	replyer varchar2(50) not null,
+	replyDate date default sysdate,
+	updateDate date default sysdate
+);
+
+create sequence seq_reply;
+
+alter table tbl_reply add constraint pk_reply primary key(rno);
+
+alter table tbl_reply add constraint fk_reply_board foreign key (bno) references tbl_board(bno);
+
+// ReplyVO 클래스 추가
+
+sql-파일-데이터모델-임포트-데이터 딕셔너리-테이블선택 및 병합 에서 테이블간 db erd로 볼 수 있다.
+
+인덱스를 이용한 페이징 쿼리
+// 이후 정렬로 시간을 낭비하지 않는  인덱스를 생성해서 조회용으로 쓴다.
+//create index idx_reply on tbl_reply(bno desc, rno asc);
+
+select /*+INDEX(tbl_reply, idx_reply)*/
+	rownum rn, bno , rno , reply, replyer, replyDate, updatedate
+	from tbl_reply
+	where bno = ?
+	and rno > 0
+	
+// 페이징을 넣은 쿼리
+
+select rno, bno, reply, replyer, replydate, updatedate
+from 
+	(	
+		select /*+INDEX(tbl_reply, idx_reply)*/
+		rownum rn, bno , rno , reply, replyer, replyDate, updatedate
+		from tbl_reply
+		where bno = ?
+			  and rno > 0
+			  and rownum <= 20
+	) where rn>10;
+
+	
+	
+댓글이 안나오는 에러 없이 안나오는 경우 브라우스 기록 삭제를 해보면 나온다.
+
+p.444
