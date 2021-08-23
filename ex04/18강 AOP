@@ -1,0 +1,33 @@
+파라미터가 올바르게 들어왔을까?
+이 작업을 하는 사용자가 적절한 권한을 가진 사용자인가?
+이 작업에서 발생할 수 있는 모든 예외는 어떻게 처리해야하는가?
+라는 핵심 로직은 아니지만 코드를 온전하게 만들기 위해서 필요한 고민을 aop가 핵심 비즈니스 로직만을 신경쓰는데 도움을 줌
+
+Target은 순수 비즈니스 로직, target을 감싸고 있는 것을 Proxy 라하고 이는 중간에 필요한 관심사들을 거쳐 Target을 호출하도록 
+자동 혹은 수동으로 작성됨.
+
+JoinPoint는 Target 객체가 가진 메서드 
+
+외부의 호출 = proxy객체를 통한 Target 객체의 joinPoint 호출
+
+pointcut은 관심사와 비즈니스 로직이 결합되는 지점.
+
+관심사는 aspect는 추상적인 관심사, advice는 aspect를 구현한 코드
+
+Advice는 동작 위치에 따라 다르게 구분
+Before Advice Taget의 joinpoint가 호출하기 전에 실행되는 코드
+
+after Returning Advice 모든 실행이 정상적으로 이루어진 이후
+after Throwing advice  예외 발생 이후
+after advice  정상적으로 실행되거나 예외가 발생했을 때 구분 없이.
+Around advice 메서드의 실행 자체를 제어할 수 있는 코드, 직접 대상 메서드를 호출하고 결과나 예외를 처리 할 수 있음.
+
+pointcut 은 advice 를 어떤 joinpoint에 결합할 것인지를 결정하는 설정
+
+execuntion(@execution) 메서드 기준으로 pointcut 설정
+within(@within) 특정타입(클래스)를 기준으로 pointcut설정
+this 주어진 인터페이스를 구현한 객체를 대상으로 pointcut설정
+args(@args) 특정한 파라미터를 가지는 대상들만을 pointcut으로 설정
+@annootation  특정한 어노테이션이 적용된 대상들만을 pointcut 설정
+
+controller에도 적용 가능하지만 일단 서비스에서 1) 서비스 계층의 메서드 호출 시 모든 파라미터들을 로그로 기록하고,@)메서드들의 실행 시간을 기록
