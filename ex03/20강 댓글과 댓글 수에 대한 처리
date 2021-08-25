@@ -1,0 +1,10 @@
+alter table tbl_board add(replycnt number default 0);
+로 게시물에 있는 댓글 개수 컬럼을 추가한다.
+
+게시물이 많을 경우 오래 걸리고 기존에 댓글이 존재했다면 replyCnt에 반영해 두어야 하므로 
+update tbl_board set replycnt = (select count(rno) from tbl_reply
+where tbl_reply.bno= tbl_board.bno ); 를 실행 한다.
+
+BoardVO, BoardMapper 수정
+
+이전 ex04 에서의 트랜잭션 설정을 추가해줘야 댓글 수 가 나온다.

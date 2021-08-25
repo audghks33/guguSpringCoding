@@ -13,6 +13,9 @@ public class BoardVO {
 	private String writer;
 	private Date regdate;
 	private Date updateDate;
-	//ÀÌÈÄ mapper interface¿Í mapper xml
+	//ï¿½ï¿½ï¿½ï¿½ mapper interfaceï¿½ï¿½ mapper xml
+	
+	private int replyCnt;
+	
 
 }

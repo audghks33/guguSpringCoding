@@ -35,9 +35,9 @@ public class ReplyController {
 	public ResponseEntity<String> create(@RequestBody ReplyVO vo){
 		
 		log.info("ReplyVO:   "+ vo);
-		
+		log.info("check");
 		int insertCount = service.register(vo);
-		
+		log.info("check");
 		log.info("Reply INSERT COUNT:  "+ insertCount);
 		
 		return insertCount ==1
@@ -79,7 +79,7 @@ public class ReplyController {
 			produces = {MediaType.TEXT_PLAIN_VALUE})
 	public ResponseEntity<String> remove(@PathVariable("rno") Long rno){
 		
-		log.info("remove : " + rno);
+		log.info("Replyremove : " + rno);
 		
 		return service.remove(rno) == 1
 				?new ResponseEntity<>("success",HttpStatus.OK)
