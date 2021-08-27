@@ -1,0 +1,27 @@
+첨부파일을 서버에 전송하는 방식은 크게 <form> 태그를 이용해서 or ajax를 이용하는 방식으로
+
+<form>의 경우
+-브라우저의 제한이 없어야하는 경우
+-일반적으로 페이지 이동과 동시에 첨부파일을 업로드하는 방식
+-<iframe>을 이용해서 화면 이동 없이 첨부파일을 처리하는 방식
+
+ajax를 이용하는 방식: 첨부파일을 별도로 처리하는 방식
+-<input type="file">을 이용하고 Ajax로 처리하는 방식
+-HTML5의 Drag and drop기능이나 jQuery라이브러리를 이용해서 처리하는 방식
+
+Commons-fileupload : 가장 일반적으로 많이 활용되고, 서블릿 3.0 이전에도 사용 가능
+서블릿 3.0이상 부터는 자체적으로 파일 업로드 처리가 API 상에서 지원
+tomcat 7버전 이후 서블릿 3.0를 활용하는 방식을 할 것임.
+
+c나 d에 upload -temp 폴더 를 만듬
+ex05 생성
+
+multipartFile은
+
+String getName() 파라미터의 이름<input> 태그의 이름
+String getOriginalFileName() 업로드되는 파일의 이름
+boolean isEmpty() 파일이존재하지 않는 경우 true
+long getSize() 업로드 되는 파일의 크기
+byte[] getBytes() byte[] 로 파일 데이터 변환
+inputStream getinputStream() 파일데이터와 연결된 inputStream을 반환
+transferTo(File file) 파일의 저장
