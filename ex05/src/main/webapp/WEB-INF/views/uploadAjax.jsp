@@ -23,7 +23,24 @@
 <script>
 	$(document).ready(function(){
 		
-		$("#uploadBtn").on("click", function(e){
+		var regex = new RegExp("(.*?)\.(exe|sh|zip|alz|mp4)$");
+		var maxSize = 5242880; //5MB
+		
+		function checkExtension (fileName, fileSize){
+			
+			if(fileSize >= maxSize) {
+				alert("파일 사이즈 초과");
+				return false;
+			}
+			
+			if(regex.test(fileName)){
+				alert("해당 종류의 파일은 업로드할 수 없습니다.");
+				return false;
+			}
+			return true;
+		}
+		
+	$("#uploadBtn").on("click", function(e){
 			
 			var formData = new FormData();
 			
@@ -36,6 +53,11 @@
 		//확인 후 다음 줄 추가
 		
 		for(var i = 0 ; i< files.length; i++){
+			
+			if(!checkExtension(files[i].name, files[i].size)){
+				return false;
+			}
+			
 			formData.append("uploadFile", files[i]);
 		}
 		
@@ -45,15 +67,19 @@
 				contentType:false,
 				data: formData,
 				type: 'POST',
+				dataType:'json',
 				success: function(result){
 					alert("올라갔다");
+					console.log(result);
 					//uploadcontroller
 				}
-			//파일은 잘 전송되지만 개발자도구에서 에러 표시가 뜬다.
+			//파일은 잘 전송되지만 
+			//개발자도구에서 에러 표시가 뜬다. -- 단순히 jsp가 없어서 안된 것
 				
 			});
 		
 		});
+		
 	});
 </script>
 </body>
