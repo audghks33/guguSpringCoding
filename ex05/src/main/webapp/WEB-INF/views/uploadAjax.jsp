@@ -29,6 +29,29 @@
 	width: 20px;
 }
 
+.bigPictureWrapper{
+	position: absolute;
+	diplay:none;
+	justify-content: center;
+	align-items: center;
+	top:0%;
+	height:100%;
+	background-color: gray;
+	z-index:100;
+	background:rgba(255,255,255,0.5);
+}
+.bigPicture{
+	position: relative;
+	display:flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.bigPicture img{
+	width:600px;
+}
+
+
 </style>
 </head>
 <body>
@@ -47,6 +70,10 @@
 <!-- jQuery 라이브러리의 경로를 추가하고 <script>를 이용해서 첨부파일을 처리 jquery cdn 참조 -->
 <button id="uploadBtn">Upload</button>
 
+<div class='bigPictureWrapper'>
+	<div class='bigPicture'>
+	</div>
+</div>
 
 
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"
@@ -55,6 +82,35 @@
 
 
 <script>
+
+//원본 이미지를 보여주는 <div> 처리
+//<a>태그에서  호출할 수 있도록 $(document) 밖에
+	function showImage(fileCallPath){
+		/* alert(fileCallPath); 
+			호출 테스트
+		*/
+		$(".bigPictureWrapper").css("display","flex").show();
+		//이미지 클릭시 커짐
+		$(".bigPicture")
+		.html("<img src='/display?fileName="+ encodeURI(fileCallPath)+"'>")
+		.animate({width:'100%', height: '100%'}, 1000);
+		
+	}
+	//이미지 클릭시 꺼짐
+	$(".bigPictureWrapper").on("click", function(e){
+	/* 	$(".bigPicture").animate({width:'0%', height:'0%'}, 1000);
+		setTimeout(()=> {
+			$(this).hide();
+		}, 1000); */
+		
+		//위 코드는 크롬은 되나 IE11에서 안될 수 있음.
+		$(".bigPicture").animate({width:'0%', height:'0%'}, 1000);
+		setTimeout(function(){
+		$('.bigPicureWrapper').hide();	
+		}, 1000);
+		
+	});
+
 	$(document).ready(function(){
 		
 		var regex = new RegExp("(.*?)\.(exe|sh|zip|alz|mp4)$");
@@ -101,13 +157,28 @@
 				
 				if(!obj.image){
 					//이미지가 아니면
-				str += "<li><img src='/resources/img/attach.png'>" + obj.fileName + "</li>";
+				/* str += "<li><img src='/resources/img/attach.png'>" + obj.fileName + "</li>"; */
+				var fileCallPath = encodeURIComponent(obj.uploadPath+"/"+obj.uuid+"_"+obj.fileName);
+				
+				console.log(obj.uploadPath+"/"+obj.uuid+"_"+obj.fileName);
+				
+				str += "<li><div><a href='/download?fileName="+fileCallPath+"'>"
+						+"<img src = '/resources/img/attach.png'>" +obj.fileName
+						+"</a>"+"<span data-file=\'"+fileCallPath+"\' data-type='file'> x </span>" + "</div></li>";
+				
+				console.log(str);
 				}else {
 					//이미지이면 후에 섬네일을 붙여줌.
 					/* str += "<li>"+ obj.fileName +"</li>"; */
 					var fileCallPath = encodeURIComponent(obj.uploadPath+"/s_"+obj.uuid+"_"+obj.fileName);
 					
-					str+= "<li><img src='/display?fileName="+fileCallPath+"'></li>" ;
+					var originPath = obj.uploadPath+"\\" + obj.uuid + "_" + obj.fileName;
+					
+					originPath = originPath.replace(new RegExp(/\\/g),"/");
+					str+= "<li><a href=\"javascript:showImage(\'"+originPath+"\')\">"
+					+"<img src='/display?fileName=" +fileCallPath+"'></a>"+"<span data-file=\'"+fileCallPath+"\' data-type='image'> x </span>"+"</li>" ;
+					
+					console.log(str);
 				}
 			});
 			
@@ -151,7 +222,28 @@
 			});
 			
 		});
+	
+	$(".uploadResult").on("click", "span", function(e){
 		
+		var targetFile  = $(this).data("file");
+		var type = $(this).data("type");
+		console.log(targetFile);
+		
+		var targetLi = $(this).closest("li");
+		
+		$.ajax({
+			
+			url:'/deleteFile',
+			data: {fileName: targetFile, type:type},
+			dataType:'text',
+			type:'POST',
+			success: function(result){
+				
+				alert(result);
+				targetLi.remove();
+			}
+		});
+	});
 	
 	});
 </script>
