@@ -200,7 +200,6 @@
 		    <artifactId>thumbnailator</artifactId>
 		    <version>0.4.14</version>
 		</dependency>
-		    <!-- 이후 domain AttachFileDTO생성 -->
 	</dependencies>
     <build>
         <plugins>

@@ -21,7 +21,7 @@ public class ReplyServiceImpl implements ReplyService{
 	@Setter(onMethod_ = @Autowired)
 	private ReplyMapper mapper;
 	
-	@Setter(onMethod_ =@Autowired)
+	@Setter(onMethod_ = @Autowired)
 	private BoardMapper boardMapper;
 	
 	@Transactional

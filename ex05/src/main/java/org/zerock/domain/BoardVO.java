@@ -1,6 +1,7 @@
 package org.zerock.domain;
 
 import java.util.Date;
+import java.util.List;
 
 import lombok.Data;
 
@@ -17,5 +18,8 @@ public class BoardVO {
 	
 	private int replyCnt;
 	
-
+	//BoardVO 에서 등록 시 BoardAttachVO 처리 가능하도록 추가
+	private List<BoardAttachVO> attachList;
+	//boardAttachMapper
+	
 }
