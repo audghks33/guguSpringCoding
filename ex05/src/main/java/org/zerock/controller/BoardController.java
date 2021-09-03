@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.zerock.domain.AttachFileDTO;
+import org.zerock.domain.BoardAttachVO;
 import org.zerock.domain.BoardVO;
 import org.zerock.domain.Criteria;
 import org.zerock.domain.PageDTO;
@@ -77,11 +78,11 @@ public class BoardController {
 		}
 		
 		
-		/*
-		 * service.register(board);
-		 * 
-		 * rttr.addFlashAttribute("result", board.getBno());
-		 */
+		
+		  service.register(board);
+		  
+		  rttr.addFlashAttribute("result", board.getBno());
+		 
 		 
 		log.info("=============================================");
 		return "redirect:/board/list";
@@ -435,5 +436,14 @@ public class BoardController {
 		
 		return new ResponseEntity<String>("deleted", HttpStatus.OK);
 	}
+	
+	@GetMapping(value="/getAttachList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@ResponseBody
+	public ResponseEntity<List<BoardAttachVO>> getAttachList(Long bno){
+		
+		log.info("getAttachList " + bno);
+		
+		return new ResponseEntity<>(service.getAttachList(bno), HttpStatus.OK);
+	}//get.jsp
 }
 
