@@ -18,4 +18,8 @@
 </select>
 <!--  register 화면 등록 -->
 
+<delete id="deleteAll">
+	delete tbl_attach where bno = #{bno}
+</delete>
+
 </mapper>

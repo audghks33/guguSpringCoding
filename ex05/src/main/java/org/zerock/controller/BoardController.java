@@ -6,6 +6,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -128,17 +130,25 @@ public class BoardController {
 		
 		log.info("remove ..." +bno+ " ��");
 		
+		List<BoardAttachVO> attachList = service.getAttachList(bno);
+		
 		if(service.remove(bno)) {
+			
+			//첨부파일 삭제
+			deleteFiles(attachList);
+			
 			rttr.addFlashAttribute("result","success");
 		}
 		
-		rttr.addAttribute("pageNum",cri.getPageNum());
-		rttr.addAttribute("amount",cri.getAmount());
-		rttr.addAttribute("type", cri.getType());
-		rttr.addAttribute("keyword", cri.getKeyword());
+		/*
+		 * rttr.addAttribute("pageNum",cri.getPageNum());
+		 * rttr.addAttribute("amount",cri.getAmount()); rttr.addAttribute("type",
+		 * cri.getType()); rttr.addAttribute("keyword", cri.getKeyword());
+		 	+cri.getListLink(); 쓸 경우 주석
+		 */
 		//modify.jsp로
 		
-		return "redirect:/board/list" ;
+		return "redirect:/board/list" + cri.getListLink();
 	}
 	
 	@GetMapping("/uploadForm")
@@ -409,6 +419,7 @@ public class BoardController {
 	@ResponseBody
 	public ResponseEntity<String> deleteFile(String fileName, String type){
 		
+		
 		log.info("업로드파일중 삭제된 파일 : " +fileName);
 		
 		File file;
@@ -445,5 +456,30 @@ public class BoardController {
 		
 		return new ResponseEntity<>(service.getAttachList(bno), HttpStatus.OK);
 	}//get.jsp
+	
+	private void deleteFiles(List<BoardAttachVO> attachList) {
+		if(attachList == null || attachList.size() == 0) {
+			return;
+		}
+		
+		log.info("첨부파일을 삭제중");
+		log.info(attachList);
+		
+		attachList.forEach(attach -> {
+			try {
+				Path file =  Paths.get("D:\\upload\\temp\\"+attach.getUploadPath()+"\\"+attach.getUuid()+"_"+attach.getFileName());
+				
+				Files.deleteIfExists(file);
+				
+				if(Files.probeContentType(file).startsWith("image")) {
+					Path thumNail = Paths.get("D:\\\\upload\\\\temp\\"+attach.getUploadPath()+"\\s_"+attach.getUuid()+"_"+attach.getFileName());
+					
+					Files.delete(thumNail);
+				}
+			} catch (Exception e) {
+				log.error("첨부파일 삭제중 에러 " + e.getMessage());
+			}
+		});
+	}
 }
 

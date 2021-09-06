@@ -43,7 +43,7 @@ public class Criteria {
 		.queryParam("amount", this.getAmount())
 		.queryParam("type",this.getType())
 		.queryParam("keyword",this.getKeyword());
-		
+		//? 그냥 getListLink 자체를 쓴다는 것인듯.
 		return builder.toUriString();
 		
 	}

@@ -11,7 +11,6 @@ import org.zerock.domain.Criteria;
 import org.zerock.mapper.BoardAttachMapper;
 import org.zerock.mapper.BoardMapper;
 
-import lombok.AllArgsConstructor;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 
@@ -59,13 +58,29 @@ public class BoardServiceImpl implements BoardService{
 		
 		log.info("���� ��..........." + board);
 		
-		return mapper.update(board) == 1;
+		attachMapper.deleteAll(board.getBno());
+		
+		boolean modifyResult = mapper.update(board) == 1;
+		
+		if(modifyResult && board.getAttachList() != null && board.getAttachList().size() >0) {
+			board.getAttachList().forEach(attach -> {
+				
+				attach.setBno(board.getBno());
+				attachMapper.insert(attach);
+			});
+		}
+		return modifyResult;
+		/* return mapper.update(board) == 1; */
 	}
 
+	@Transactional
 	@Override
 	public boolean remove(Long bno) {
 		
 		log.info("������ .............." + bno);
+		
+		attachMapper.deleteAll(bno);
+		//첨부 파일 또한 삭제
 		
 		return mapper.delete(bno) == 1;
 	}

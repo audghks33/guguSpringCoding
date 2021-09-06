@@ -82,11 +82,142 @@
   </div>
   <!-- end panel -->
 </div>
+
+
+<div class='bigPictureWrapper'>
+	<div class='bigPicture'>
+	
+	</div>
+</div>
+
+
+<style>
+.uploadResult{
+	width:100%;
+	background-color : gray;
+}
+
+.uploadResult ul{
+	display: flex;
+	flex-flow :row;
+	justify-content:center;
+	align-items:center;
+}
+
+.uploadResult ul li {
+	list-style : none;
+	padding: 10px;
+	align-content: center;
+	text-align: center;
+}
+
+.uploadResult ul li img{
+	width: 20px;
+}
+
+.uploadReulst ul li span {
+	color: white;
+}
+
+.bigPictureWrapper{
+	position: absolute;
+	diplay:none;
+	justify-content: center;
+	align-items: center;
+	top:0%;
+	height:100%;
+	background-color: gray;
+	z-index:100;
+	background:rgba(255,255,255,0.5);
+}
+.bigPicture{
+	position: relative;
+	display:flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.bigPicture img{
+	width:600px;
+}
+
+</style>
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">Files</div>
+			  <div class="panel-body">
+			<div class="form-group uploadDiv">
+            	<input type="file" name='uploadFile' multiple="multiple">
+       		</div>
+			
+			<div class="uploadResult">
+				<ul>
+				</ul>
+			</div>
+			<!--  -->
+			</div>
+		</div>
+		<!-- /.panel panel-default -->
+	</div>
+	<!-- /. col-lg-12 -->
+</div>
 <!-- /.row -->
+
+<script >
+	$(document).ready(function(){
+		(function(){
+			/* console.log(replyService); */
+			console.log("==================");
+			console.log("JS TEST");
+			
+			var bno ='<c:out value="${board.bno}"/>';
+			
+			//업로드 이미지 보이게 하기
+			$.getJSON("/board/getAttachList", {bno: bno}, function(arr){
+				
+				console.log("arr"+ arr);
+				
+				var str ="";
+				
+				$(arr).each(function(i, attach){
+						
+						  if(attach.fileType){
+					            var fileCallPath =  encodeURIComponent( attach.uploadPath+ "/s_"+attach.uuid +"_"+attach.fileName);
+					            
+					            str += "<li data-path='"+attach.uploadPath+"' data-uuid='"+attach.uuid+"' "
+					            str +=" data-filename='"+attach.fileName+"' data-type='"+attach.fileType+"' ><div>";
+					            str += "<span> "+ attach.fileName+"</span>";
+					            str += "<button type='button' data-file=\'"+fileCallPath+"\' data-type='image' "
+					            str += "class='btn btn-warning btn-circle'><i class='fa fa-times'></i></button><br>";
+					            str += "<img src='/display?fileName="+fileCallPath+"'>";
+					            str += "</div>";
+					            str +"</li>";
+					          }else{
+					              
+					            str += "<li data-path='"+attach.uploadPath+"' data-uuid='"+attach.uuid+"' "
+					            str += "data-filename='"+attach.fileName+"' data-type='"+attach.fileType+"' ><div>";
+					            str += "<span> "+ attach.fileName+"</span><br/>";
+					            str += "<button type='button' data-file=\'"+fileCallPath+"\' data-type='file' "
+					            str += " class='btn btn-warning btn-circle'><i class='fa fa-times'></i></button><br>";
+					            str += "<img src='/resources/img/attach.png'></a>";
+					            str += "</div>";
+					            str +"</li>";
+					          }
+					       });
+				
+				$(".uploadResult ul").html(str);
+				
+			});//end getJson
+		
+		})();
+	});
+</script>
 
 <script type="text/javascript">
 $(document).ready(function() {
-
+	
 
 	  var formObj = $("form");
 
@@ -116,10 +247,152 @@ $(document).ready(function() {
 	      formObj.append(amountTag);
 	      formObj.append(keywordTag);
 	      formObj.append(typeTag);	       
-	    }
+	      
+	    }else if(operation === 'modify'){
+	    	
+	    	console.log("sumbit clicked");
+	    	
+	    	var str = "";
+	    	
+	    	$(".uploadResult ul li").each(function(i, obj){
+	    		
+	    		var jobj= $(obj);
+	    		
+	    		//console.log HTML과 같은 트리에서 요소를 인쇄합니다
+				//console.dir JSON과 같은 트리에서 요소를 인쇄합니다.
+	    		console.dir(jobj);
+	    		
+	    		str += "<input type='hidden' name='attachList["+i+"].fileName' value='"+jobj.data("filename")+"'>";
+				console.log("히든 1: " +str);
+				str += "<input type='hidden' name='attachList["+i+"].uuid' value='"+jobj.data("uuid")+"'>";
+				console.log("히든 2: " +str);
+				str += "<input type='hidden' name='attachList["+i+"].uploadPath' value='"+jobj.data("path")+"'>";
+				console.log("히든 3: " +str);
+				str += "<input type='hidden' name='attachList["+i+"].fileType' value='"+jobj.data("type")+"'>";
+				console.log("히든 4: " +str);
+	    	});
+	    	formObj.append(str).submit();
+	    }//BoardServiceImpl
 	    
 	    formObj.submit();
 	  });
+	  
+	  //첨부파일 삭제 버튼
+	  $(".uploadResult").on("click", "button", function(e){
+		  
+		  console.log("첨부파일 삭제");
+		  
+		  if(confirm("이 파일을 삭제하실래요? ")){
+			  var targetLi = $(this).closest("li");
+			  targetLi.remove();
+		  }
+		  
+	  });
+	  
+	  //파일 종류/사이즈 확인
+		var regex = new RegExp("(.*?)\.(exe|sh|zip|alz|avi)$");
+		var maxSize = 5242880;
+		
+		function checkExtension(fileName, fileSize){
+			
+			if(fileSize >= maxSize){
+				alert("파일 사이즈 초과");
+				return false;
+			}
+			
+			if(regex.test(fileName)){
+				
+				alert("해당 종류의 파일은 업로드 할 수 없습니다.");
+				return false;
+			}
+			return true;
+		}
+		
+		//파일업로드 버튼을 눌렀을 때
+		$("input[type='file']").change(function(e){
+			
+			var formData= new FormData();
+			
+			var inputFile = $("input[name='uploadFile']");
+			
+			var files = inputFile[0].files;
+			
+			for(var i = 0; i< files.length; i++){
+				console.log(files);
+				if(!checkExtension(files[i].name, files[i].size) ){
+					return false;
+				}
+				formData.append("uploadFile", files[i]);
+			}
+			
+			$.ajax({
+				url: 'uploadAjaxAction',
+				processData:false,
+				contentType: false,
+				data: formData,
+				type:'POST',
+				dataType: 'json',
+				success: function(result){
+					console.log(result);
+					showUploadResult(result); //업로드 결과 처리 함수
+				}
+				
+			});
+		});
+		
+		//파일 등록 했을 떄
+			function showUploadResult(uploadResultArr){
+				
+				if(!uploadResultArr || uploadResultArr.length == 0){return;}
+				
+				var uploadUL = $(".uploadResult ul");
+				var str ="";
+				
+				$(uploadResultArr).each(function(i,obj){
+				console.log(obj.image);
+					
+					if(obj.image){
+					/*	alert("이미지임"); */
+						var  fileCallPath = encodeURIComponent(obj.uploadPath+"/s_"+obj.uuid+"_"+obj.fileName);
+						// 한거번에 str 다 집어 넣는 거랑 다르게 그나마 보기 편한듯?
+						//str += "<li><div>"; 
+						//<form> 를 추가해서 등록에 대한 데이터베이스 처리
+						str += "<li data-path='"+obj.uploadPath+"'";
+						str += " data-uuid='"+obj.uuid+"' data-filename='"+obj.fileName+"' data-type='"+obj.image+"'";
+						str += "><div>";
+						//<form> 를 추가해서 등록에 대한 데이터베이스 처리
+						console.log("콘솔 1  " + str );
+						
+						str += "<span>" + obj.fileName+"</span>";
+						str += "<button type ='button' data-file=\'"+fileCallPath+"\' data-type='image' class='btn btn-warning btn-circle'><i class='fa fa-times'></i></button><br>";
+						str += "<img src='/display?fileName="+fileCallPath+"'>";
+						str += "</div>";
+						str += "</li>";
+						
+					}else {
+					/* 	alert("딴거임"); */
+						var fileCallPath = encodeURIComponent(obj.uploadPath+"/"+obj.uuid+"_"+obj.fileName);
+						
+						var fileLink = fileCallPath.replace(new RegExp(/\\/g),"/");
+						
+						/* str += "<li><div>" */
+						//<form> 를 추가해서 등록에 대한 데이터베이스 처리
+						console.log("콘솔 2  " + str );
+						str += "<li ";
+						str += "data-path='"+obj.uploadPath+"' data-uuid='"+obj.uuid+"' data-filename='"+obj.fileName+"' data-type='"+obj.image+"' ><div>";
+						//<form> 를 추가해서 등록에 대한 데이터베이스 처리 이후 BoardVO input hidden 처리
+						str +="<span>" +obj.fileName+"</span>";
+						str +="<button type= 'button' data-file=\'"+fileCallPath+"\' data-type='file' class='btn btn-warning btn-circle'><i class='fa fa-times'></i></button><br>";
+						str +="<img src='/resources/img/attach.png'></a>";
+						str +="</div>";
+						str +="</li>";
+								
+					}
+						console.log(str);
+				});
+				
+				uploadUL.append(str);
+			}
 		
 	});
 

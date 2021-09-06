@@ -1,0 +1,8 @@
+파일삭제시 첨부시킨 파일 또한 삭제를 해야한다.
+-BoardAttachMapper -> BoardAttachMapper.xml -> BoardServiceImpl delete
+
+이후 해당 게시물의 첨부파일 정보를 미리준비
+데이터 베이스 상에서 해당 게시물과 첨부파일 데이터 삭제
+첨부파일 목록을 이용해서 해당 폴더에서 섬네일 이미지와 일반파일을 삭제
+
+-Criteria -> BoardController 
