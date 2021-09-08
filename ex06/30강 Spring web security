@@ -1,0 +1,62 @@
+Spring Web Security
+필터와 인터셉터는 특정한 서블릿이나 컨트롤러의 접근에 관여한다는 점에서 유사하지만 필터는 스프링과 무관하게 서블릿자원
+, 인터셉터는 스프링의 빈으로 관리되면서 스프링의 컨텍스트 내에 속한다는 차이가 있다.
+
+인터셉터는 스프링의 내부에서 컨트롤러의 호출할 때 관여가 가능해서 스프링 컨텍스트 내에 있는 모든 자원을 활용가능
+
+Servlet context-----------------------------------
+|	||		|ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ|	|
+|	||		|		spring context		    |   |
+|	||		|								|	|
+|	||		|	interceptor					|	|
+|	||		|								|	|
+|	||		|								|	|
+|	||		|								|	|
+|	||		|								|	|
+|	||		|								|	|
+|	||		|								|	|
+|	||		|								|	|
+|	||		|								|	|
+|	||필터	|ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ-|	|
+
+스프링 시큐리티를 이용하면 하나의 스프링 MVC 프로젝트에 이런 구조가 생성이 됨.
+
+spring context 			
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ			
+ Securtiy context		안     밖
+필	authenication Manager	|		Web application
+필							|		Context
+필							|		(servlet-context.xml)
+터							|
+							|
+	accessDescition manager	|		Root Context
+							|		(root-context.xml
+							
+pom.xml에 이전 ex05에서 사용한 설정 가져오기 + security-web ,  config, core, taglibs 추가
+
+
+security 태그 설정 이후 시큐리티에 의해 제어가 필요한 URI를 설계하고 적용하도록 한다.
+
+/sample/all 로그인 안해도 접근가능
+/sample/member 로그인 한 사용자들만 접근 가능
+/sample/admin 관리자 권한을 가진 사용자만
+controller -> SampleController 작성
+
+
+
+
+AuthentieationManager은 
+
+						AuthentieationManager
+								|
+						providerManager
+								|
+DaoAuthenticationProvider	CasAuthenticationProvider	remoteAuthenticationProvider
+		LdapAuthenticationProvider	
+		
+		
+		AuthenticationProvider 라는 타입의 객체를 이용해서 ProviderManager가 인증 처리한다.
+							
+		AuthenticationManager
+				|				AuthenticationProvider <-> userDetailsService
+		ProviderManager ---------/
