@@ -10,5 +10,7 @@
 </head>
 <body>
 <h1>관리자페이지</h1>
+
+<a href="/customLogout">log out</a>
 </body>
 </html>

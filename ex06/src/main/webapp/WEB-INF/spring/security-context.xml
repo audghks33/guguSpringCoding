@@ -8,14 +8,51 @@
 
 <!-- security가 namespace에 추가된 버전은 5.0xml의 네임스페이스 이다. beans 살짝 수정 후 web.xml설정-->
 
+	<bean id="customAccessDenied" class="org.zerock.security.CustomAccessDeniedHandler"></bean>
+	<bean id="customLoginSuccess" class="org.zerock.security.CustomLoginSuccessHandler"></bean>
 
-	<security:http>
-		<security:form-login/>
+		
+	<security:http auto-config="true" use-expressions="true">
+	
+		<security:intercept-url pattern="/sample/all" access="permitAll" />
+		
+		<security:intercept-url pattern="/sample/member" access="hasRole('ROLE_MEMBER')" />
+		<!-- member로 들어가면 자동으로 로그인페이지가 생기게끔 해줌. -->
+		
+		<security:intercept-url pattern="/sample/admin" access="hasRole('ROLE_ADMIN')" />
+		
+		<!-- <security:form-login/>  기본 페이지모양을 바꾸기 위해-->
+		<!-- <security:form-login login-page="/customLogin" /> -->
 			
+		<!-- <security:access-denied-handler error-page="/accessError/" />	 -->
+		<security:access-denied-handler ref="customAccessDenied" />
+		
+		<!-- 로그아웃시 -->
+		<security:logout logout-url="/customLogout" invalidate-session="true" />
+		
+		<security:form-login login-page="/customLogin" authentication-success-handler-ref="customLoginSuccess" />
 	</security:http>
 	
 	<security:authentication-manager>
 	
+		<security:authentication-provider>
+			
+			<security:user-service>
+				
+				<security:user name="member" password="{noop}member" authorities="ROLE_MEMBER"/>
+				<!-- http://localhost:8080/sample/member로 접속할 계정 /  시큐리티5버전부턴 PasswordEncoder 꼭 있어야함. 
+				포맷팅 처리를 따로 안하고싶으면 {noop} 패스워드 문자열을 붙이는 걸로 해결 가능
+				개발자 도구 ->application -> cookies ->에서 쿠키 삭제로 로그인 해제가능
+				-->			
+				
+				<security:user name="admin" password="{noop}admin" authorities="ROLE_ADMIN"/>
+				
+				
+
+			</security:user-service>
+		
+			
+		</security:authentication-provider>
 	</security:authentication-manager>
 	<!-- file -->
 </beans>
