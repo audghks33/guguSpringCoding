@@ -1,0 +1,18 @@
+스프링 시큐리티의 기본설정으로 따라가면 유동적인 정보를 이용하기 힘듬.
+
+그래서 UserDetailsService 구현
+-domain AuthVO , memberVO
+
+32강의 기존테이블을 이용하는 경우의 테이블 설정을 해야함.
+
+CustomUserDetailsService 구성
+
+UserDetailsService
+	^
+	|
+CustomUserDetailsService <- MemberMapper
+
+security-context.xml 에서 설정이 끝나면 
+memberVO 인스턴스를 스프링 싴리티의 UserDetails타입으로 변환하는 작업을 처리해아한다.
+
+domain - CustomUser
