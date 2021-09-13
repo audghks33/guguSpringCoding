@@ -1,0 +1,20 @@
+스프링 시큐리티 표현식 
+<security:intercept-url pattern="/sample/member" access="hasRole('ROLE_MEMBER')" />
+hasRole() or hasAuthority() - 해당 권한이 있으면 true
+
+hasAnyRole() or hasAnyAuthority() 여러 권한들 중에서 하나라도 해당되면
+
+principal 현재 사용자의 정보
+<p>principal :  <sec:authentication property="principal"/>:</p>
+<p>MemberVO :  <sec:authentication property="principal.member"/>:</p>
+
+permitAll 모든 사용자에게 허용
+<security:intercept-url pattern="/sample/all" access="permitAll" />
+
+denyAll 모든 사용자에게 거부
+
+isAnonymous() 익명의 사용자의 경우
+
+isAuthenticatied() 인증된 사용자면 true
+
+isFullyAuthenticated() Remember-me(?)로 인증된 것이 아닌 인증된 사용자의 경우
