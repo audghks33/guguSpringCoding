@@ -1,0 +1,20 @@
+대게는 쿠키를 이용해서 구현.
+security-context.xml / security:remember-me 태그로 구현가능
+
+사용되는 속성
+key: 쿠키에 사용되는 값을 암호화하기 위한 키
+data-source-ref:DataSource를 지정하고 테이블을 이용해서 기존 로그인 정보를 기록(옵션)
+remember-me-cookie: 브라우저에 보관되는 쿠키의 이름을 지정합니다. 기본값은 'remember-me'
+remember-me-parameter: 웹 화면에서 로그인할 때 'remember-me'는 대부분 체크박스를 이용해서 처리
+token-validity-seconds: 쿠키의 유효시간
+
+--- 테이블 이름은 지정된 이름.
+create table persistent_logins (
+username varchar(64) not null,
+series varchar(64) primary key,
+token varchar(64) not null,
+last_used timestamp not null
+);
+이후 security-context.xml 
+
+36강은 java설정을 이용한 시큐리티 로그인 설정이므로 pass

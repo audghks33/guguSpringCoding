@@ -25,6 +25,10 @@
 	<div>
 		<input type='password' name='password' value='admin'>
 	</div>
+	
+	<div>
+		<input type='checkbox' name= 'remember-me'> 아이디 저장
+	</div>
 	<div>
 		<input type='submit' >
 	</div>
