@@ -9,6 +9,8 @@ import java.util.stream.IntStream;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -98,6 +100,40 @@ public class SampleController {
 		//post이므로 약간 테스트 방식이 약간 다름
 		//관련 테스트는 Rest테스트 학습 이후
 		// test/java - SampleControllerTests
+	}
+	
+	@GetMapping("/all")
+	public void doAll() {
+		
+		log.info("다 접속 가능 URI");
+	}
+	
+	@GetMapping("/member")
+	public void doMember() {
+		
+		log.info("멤버 접속 URI");
+	}
+	
+	@GetMapping("/admin")
+	public void doAdmin() {
+		
+		log.info("관리자 권한 접속");
+	}
+	
+	
+	///스프링 시큐리티 설정
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_MEMBER')")
+	@GetMapping
+	public void doMember2() {
+		
+		log.info("logined annotation member");
+	}
+	
+	@Secured({"ROLE_ADMIN"})
+	@GetMapping("/annoAdmin")
+	public void doAdmin2() {
+		
+		log.info("admin annotation only");
 	}
 
 }

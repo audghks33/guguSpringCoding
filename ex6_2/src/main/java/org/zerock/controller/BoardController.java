@@ -20,6 +20,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
@@ -67,7 +68,14 @@ public class BoardController {
 		model.addAttribute("pageMaker",new PageDTO(cri,total));
 	}
 	
+	@GetMapping("/register")
+	@PreAuthorize("isAuthenticated()")
+	public void  register() {
+		
+	}
+	
 	@PostMapping("/register")
+	@PreAuthorize("isAuthenticated()")
 	public String register(BoardVO board, RedirectAttributes rttr) {
 		
 		log.info("=============================================");
@@ -89,10 +97,7 @@ public class BoardController {
 		log.info("=============================================");
 		return "redirect:/board/list";
 	}
-	@GetMapping("/register")
-	public void  register() {
-		
-	}
+
 	
 	@GetMapping({"/get" ,"/modify"})
 	public void get(@RequestParam("bno") Long bno, Model model, 
@@ -103,6 +108,7 @@ public class BoardController {
 		model.addAttribute("board", service.get(bno));
 	}
 	
+	@PreAuthorize("principal.username == #board.writer")
 	@PostMapping("/modify")
 	public String modify(BoardVO board, RedirectAttributes rttr,
 			@ModelAttribute("cri") Criteria cri) {
@@ -124,6 +130,7 @@ public class BoardController {
 		//이런식으로 일일이 넣어 줄 필요를 덜어 줄 수 있다.
 	}
 	
+	@PreAuthorize("pricipal.username == #writer")
 	@PostMapping("/remove")
 	public String remove(@RequestParam("bno") Long bno, RedirectAttributes rttr,
 			@ModelAttribute("cri") Criteria cri) {

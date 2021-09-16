@@ -2,6 +2,7 @@
   pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <%@include file="../includes/header.jsp"%>
 
 
@@ -40,10 +41,22 @@
           <label>Writer</label> <input class="form-control" name='writer'
           value= '<c:out value="${board.writer }" />' readonly="readonly" >
         </div>
+        
+        <sec:authentication property="principal" var="pinfo" />
+        
+        <sec:authorize access="isAuthenticated()">
+        
+		<c:if test="${pinfo.username eq board.writer}">
         <button data-oper='modify' class="btn btn-default" 
+        >변경 Button</button>
         <%-- 단순 링크에서 추후 다양한 상황처리릉 위한 form 이동
         onclick="location.href='/board/modify?bno=<c:out value="${board.bno}" />'" --%>
-        >변경 Button</button>
+        </c:if>
+        </sec:authorize>
+        
+        
+        
+        
         <button data-oper='list' class="btn btn-info"
         <%--  단순 링크에서 추후 다양한 상황처리릉 위한 form 이동
         onclick="location.href='/board/list'" --%> 
@@ -153,7 +166,9 @@
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				<i class ="fa fa-comments fa-fw"></i> Reply
+				<sec:authorize access="isAuthenticated()">
 				<button id='addReplyBtn' class='btn btn-primary btn-xs pull-right'> 댓글쓰기</button>
+				</sec:authorize>
 			</div>
 			
 <!-- modal -->
@@ -286,6 +301,20 @@ $(document).ready(function(){
 	var modalRemoveBtn = $("#modalRemoveBtn");
 	var modalRegisterBtn = $("#modalRegisterBtn");
 	
+	var replyer = null;
+	
+	//자바스크립트에서 sec태그 사용가능
+	<sec:authorize access="isAuthenticated()">
+		replyer = '<sec:authentication property="principal.username"/>';
+	</sec:authorize>
+	
+	var csrfHeaderName ="${_csrf.headerName}";
+	var csrfTokenValue ="${_csrf.token}";
+	
+	$(document).ajaxSend(function(e, xhr, options){
+		xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
+	});
+	
 	$("#modalCloseBtn").on("click", function(e){
 		
 		modal.modal('hide');
@@ -294,6 +323,7 @@ $(document).ready(function(){
 	$("#addReplyBtn").on("click", function(e){
 		
 		modal.find("input").val("");
+		modal.find("input[name='replyer']").val(replyer);
 		modalInputReplyDate.closest("div").hide();
 		modal.find("button[id !='modalCloseBtn']").hide();
 		
@@ -342,32 +372,6 @@ $(document).ready(function(){
 		});
 	});
 	
-	modalModBtn.on("click", function(e){
-		
-		var reply = {rno:modal.data("rno"), reply:modalInputReply.val()};
-		
-		replyService.update(reply, function(result){
-			
-			alert(result);
-			modal.modal("hide");
-			showList(1);
-		});
-	});
-	
-	modalRemoveBtn.on("click", function(e){
-		
-		var rno = modal.data("rno");
-		
-		replyService.remove(rno, function(result){
-			
-			alert(result);
-			modal.modal("hide");
-			showList(1);
-			
-		});
-		// 이후 정렬로 시간을 낭비하지 않는  인덱스를 생성해서 조회용으로 쓴다.
-		//create index idx_reply on tbl_reply(bno desc, rno asc);
-	});
 	
 	var pageNum =1;
 	var replyPageFooter = $(".panel-footer");
@@ -429,6 +433,26 @@ $(document).ready(function(){
 		
 		var reply={rno:modal.data("rno"), reply:modalInputReply.val()};
 
+		var reply ={
+			rno:modal.data("rno"),
+			reply:modalInputReply.val(),
+			replyer:originalReplyer
+		};
+		
+		if(!replyer){
+			alert("로그인 후 수정이 가능합니다.");
+			modal.modal("hide");
+			return;
+		}
+		
+		console.log("원래 작성자 : "+ originalReplyer);
+		
+		if(replyer != originalReplyer){
+			alert("자신이 작성한 댓글만 수정이 가능합니다.");
+			modal.modal("hide");
+			return;
+		}
+		
 		replyService.update(reply, function(result){
 			
 			alert(result);
@@ -441,12 +465,31 @@ $(document).ready(function(){
 		
 		var rno = modal.data("rno");
 		
-		replyService.remove(rno, function(result){
+		if(!replyer){
+			alert("로그인 후 삭제가 가능합니다.")
+			modal.modal("hide");
+			return;
+		}
+		
+		var originalReplyer = modalInputReplyer.val();
+		
+		console.log("원래 작성자: " + originalReplyer );
+		
+		if(replyer != originalReplyer){
+			alert("자신이 작성한 댓글만 삭제가 가능합니다.");
+			modal.modal("hide");
+			return;
+		}
+		
+		replyService.remove(rno, originalReplyer, function(result){
 			
 			alert(result);
 			modal.modal("hide");
-			showList(pageNum);
+			showList(1);
+			
 		});
+		// 이후 정렬로 시간을 낭비하지 않는  인덱스를 생성해서 조회용으로 쓴다.
+		//create index idx_reply on tbl_reply(bno desc, rno asc);
 	});
 	
 });

@@ -2,6 +2,7 @@
   pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <%@include file="../includes/header.jsp"%>
 
 
@@ -22,6 +23,7 @@
       <div class="panel-body">
 
 		<form role="form" action="/board/modify" method="post">
+		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
 		<input type ='hidden' name="pageNum" value='<c:out value="${cri.pageNum }"/>'>
 		<input type ='hidden' name="amount" value='<c:out value="${cri.amount }"/>'>
 		<!-- 검색 후 찾아온 게시글을 변경할때 해당 검색내용 저장 -->
@@ -65,10 +67,15 @@
         </div>
         
         
+        <sec:authentication property="principal" var="pinfo" />
+        <sec:authorize access="isAuthenticated()">
+        <c:if test="${pinfo.username eq board.writer}">
         <button type="submit" data-oper='modify'  class="btn btn-default" 
        	>변경 </button>
        	<button type="submit" data-oper='remove'  class="btn btn-danger" 
        	>삭제</button>
+       	</c:if>
+       	</sec:authorize>
           
         <button type="submit" data-oper='list' class="btn btn-info"
         >List Button</button>
@@ -309,6 +316,9 @@ $(document).ready(function() {
 		}
 		
 		//파일업로드 버튼을 눌렀을 때
+		var csrfHeaderName="${_csrf.headerName}";
+		var csrfTokenValue="${_csrf.token}";
+		
 		$("input[type='file']").change(function(e){
 			
 			var formData= new FormData();
@@ -329,6 +339,9 @@ $(document).ready(function() {
 				url: 'uploadAjaxAction',
 				processData:false,
 				contentType: false,
+				beforeSend: function(xhr){
+					xhr.setRequestHeader(csrfHeaderName,csrfTokenValue);
+				},
 				data: formData,
 				type:'POST',
 				dataType: 'json',

@@ -18,6 +18,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
@@ -111,6 +112,7 @@ public class UploadController {
 	 * thumbnail.close(); } } catch (Exception e) { log.error(e.getMessage()); } } }
 	 */
 	//위의 uploadAjaxPost를 수정
+	@PreAuthorize("isAuthenticated()")
 	@PostMapping(value= "/uploadAjaxAction", produces= MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
 	public ResponseEntity<List<AttachFileDTO>> uploadAjaxPost(MultipartFile[] uploadFile) {
@@ -299,6 +301,8 @@ public class UploadController {
 		return new ResponseEntity<Resource>(resource, headers, HttpStatus.OK);
 		//IE를 같이 서비스한다면 HttpServletReuqest에 포함된 헤더 정보들을 이용해서 IE 확인 후 다르게 처리하는 방식을 사용
 	}
+	
+	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/deleteFile")
 	@ResponseBody
 	public ResponseEntity<String> deleteFile(String fileName, String type){
